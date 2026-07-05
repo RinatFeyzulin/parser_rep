@@ -5,6 +5,23 @@ if [ ! -f "./parser_rep" ]; then
     gcc parser_replace.c -o parser_rep
 fi
 
+# Автоматическая конвертация .xlsx в .csv
+# Ищем все файлы .xlsx в текущей директории
+xlsx_files=(*.xlsx)
+
+# Проверяем, существуют ли xlsx файлы (чтобы не обрабатывать пустую маску *.xlsx)
+if [ -e "${xlsx_files[0]}" ]; then
+    echo "Найдена таблица(ы) XLSX. Конвертируем в CSV..."
+    for xlsx in "${xlsx_files[@]}"; do
+        # Формируем имя для нового csv-файла (заменяем расширение)
+        csv_name="${xlsx%.xlsx}.csv"
+        
+        # Конвертируем с разделителем точка с запятой (-d ';')
+        xlsx2csv -d ';' "$xlsx" "$csv_name"
+        echo "Сконвертировано: $xlsx -> $csv_name"
+    done
+fi
+
 # Инициализируем два пустых массива для файлов
 cm_files=()
 regular_files=()
